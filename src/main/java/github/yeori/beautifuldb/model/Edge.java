@@ -1,4 +1,4 @@
-package github.yeori.beatifuldb.model;
+package github.yeori.beautifuldb.model;
 /**
  * it represents foreign key (from -> to)
  * @author yeori

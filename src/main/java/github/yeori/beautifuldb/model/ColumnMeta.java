@@ -1,4 +1,4 @@
-package github.yeori.beatifuldb.model;
+package github.yeori.beautifuldb.model;
 /**
  * pk, uk, fk, etc
  * @author yeori

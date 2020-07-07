@@ -1,4 +1,4 @@
-package github.yeori.beatifuldb;
+package github.yeori.beautifuldb;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

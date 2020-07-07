@@ -1,4 +1,4 @@
-package github.yeori.beatifuldb.model;
+package github.yeori.beautifuldb.model;
 
 public class ColumnType {
 	

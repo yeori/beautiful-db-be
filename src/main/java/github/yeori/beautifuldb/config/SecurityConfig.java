@@ -1,5 +1,11 @@
 package github.yeori.beautifuldb.config;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,14 +14,18 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 import github.yeori.beautifuldb.dao.Enc;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	private final String defaultLoginPage = "/login";
 
 	@Autowired
 	UserDetailsService userDetailService;
@@ -25,14 +35,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// TODO Auto-generated method stub
 		// super.configure(http);
 		http.authorizeRequests()
-			.antMatchers("/", "/js/**", "/css/**", "/img/**")
+			.antMatchers("/", "/js/**", "/css/**", "/img/**", "/login", "/favicon.ico")
 				.permitAll()
 			.anyRequest()
-				.authenticated().and()
-				.formLogin().and()
-				.httpBasic();
-
+				.authenticated()
+			.and()
+				.formLogin()
+					.loginPage(defaultLoginPage)
+					.loginProcessingUrl("/doLogin")
+					.defaultSuccessUrl("/login/success")
+			.and()
+				.exceptionHandling().authenticationEntryPoint(new UnAuthenticated(defaultLoginPage))
+			;
+//				.and()
+//				.csrf().disable();
 	}
+	
+	
 	
 	@Bean
 	AuthenticationProvider authProvider() {
@@ -41,6 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		provider.setPasswordEncoder(sha256Encoder());
 		return provider;
 	}
+
 	
 	@Bean
 	public PasswordEncoder sha256Encoder() {
@@ -68,6 +88,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		@Override
 		public boolean matches(CharSequence rawPassword, String encodedPassword) {
 			return encode(rawPassword).equals(encodedPassword);
+		}
+		
+	}
+	
+	// static class UnAuthenticated implements AuthenticationEntryPoint {
+	 static class UnAuthenticated extends LoginUrlAuthenticationEntryPoint {
+
+		public UnAuthenticated(String loginFormUrl) {
+			super(loginFormUrl);
+		}
+
+		@Override
+		public void commence(
+				HttpServletRequest req,
+				HttpServletResponse res,
+				AuthenticationException authException) throws IOException, ServletException {
+			// throw 401 response
+			String xhr = req.getHeader("X-Requested-With");
+			if ("XMLHttpRequest".equals(xhr)) {
+				res.sendError(HttpServletResponse.SC_UNAUTHORIZED);	
+			} else {
+				super.commence(req, res, authException);
+			}
 		}
 		
 	}

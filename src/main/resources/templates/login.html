@@ -5,21 +5,20 @@
 <title>Insert title here</title>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script  th:inline="javascript">
-var prop = /*[[${_csrf.headerName}]]*/'null'
-var token = /*[[${_csrf.token}]]*/'null'
 $(document).ready(function() {
 	console.log('done')
 	$('#btn').click(function(e) {
 		e.preventDefault()
 		var id = $('input[type="text"]').val()
 		var pass = $('input[type="password"]').val()
+		var csrf = $('input[type="hidden"]').val()
 		console.log(id, pass)
 		$.ajax({
 			url: '/doLogin',
 			method: 'POST',
 			dataType: 'json',
 			headers: {
-				'X-CSRF-TOKEN': token
+				'X-CSRF-TOKEN': csrf
 			},
 			data: {
 				username: id,
@@ -37,7 +36,7 @@ $(document).ready(function() {
 	
 	$('#me').click(function(){
 		$.ajax({
-			url: '/me',
+			url: '/me2',
 			method: 'GET',
 			success: function(res) {
 				console.log(res)
@@ -53,7 +52,7 @@ $(document).ready(function() {
 <body>
 <h3>LOGIN</h3>
 <button id="me">ME</button>
-<input type="hidden" value="">
+<input type="hidden" th:value="${_csrf.token}">
 <input type="text" value="test@test.com"><input type="password" value="1234">
 <a href="#" id="btn">login</a>
 </body>

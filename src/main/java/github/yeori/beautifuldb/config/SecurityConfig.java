@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -41,11 +42,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// super.configure(http);
 		http
 			.authorizeRequests()
-//			.antMatchers("/**").permitAll()
-//			.and()
-//			.authorizeRequests()
-			.antMatchers("/", "/js/**", "/css/**", "/img/**", "/favicon.ico",  
-					"/login", "/oauth/**", "/member", "/join")
+			.antMatchers("/", "/js/**", "/css/**", "/img/**", "/favicon.ico",
+					"/oauth/**", "/member", "/join", "/ready")
 				.permitAll()
 			.anyRequest()
 				.authenticated()
@@ -59,14 +57,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 				.exceptionHandling().authenticationEntryPoint(new UnAuthenticated(defaultLoginPage))
 			.and()
-				.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+				.csrf().csrfTokenRepository(tokenRepository());
 	}
 	
+	@Bean CsrfTokenRepository tokenRepository() {
+		return new CookieCsrfTokenRepository();
+	}
 	@Bean
     public CorsConfigurationSource corsConfigurationSource() {
+		String devServerurl = "http://dev.beautifuldb.kr";
+		String prodServerUrl = "https://beautifuldb.kr";
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(Arrays.asList("http://dev.beautifuldb.kr"));
+        config.setAllowedOrigins(Arrays.asList(devServerurl, prodServerUrl));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowedMethods(Arrays.asList("*"));
         config.setAllowCredentials(true);
@@ -128,12 +131,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				HttpServletResponse res,
 				AuthenticationException authException) throws IOException, ServletException {
 			// throw 401 response
-			String xhr = req.getHeader("X-Requested-With");
-			if ("XMLHttpRequest".equals(xhr)) {
-				res.sendError(HttpServletResponse.SC_UNAUTHORIZED);	
-			} else {
-				super.commence(req, res, authException);
-			}
+//			String xhr = req.getHeader("X-Requested-With");
+			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);	
+//			if ("XMLHttpRequest".equals(xhr)) {
+//			} else {
+//				super.commence(req, res, authException);
+//			}
 		}
 		
 	}

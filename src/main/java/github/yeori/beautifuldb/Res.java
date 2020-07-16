@@ -11,24 +11,34 @@ public class Res {
         return m;
     }
 
+    public static TypeMap with(boolean success, Object ... args) {
+    	TypeMap m = success(success);
+    	puts(m, args);
+    	return m;
+    }
     public static Object success(Object ... args) {
-        if(args.length % 2 == 1) {
-            throw new RuntimeException("(key, value) mismatch: ");
-        }
         TypeMap m = success(true);
-        for (int i = 0; i < args.length; i+=2) {
-            Object k = args[i];
-            Object v = args[i+1];
-            if(k.getClass() != String.class) {
-                throw new BeautDbException(
-                        500, 
-                        "SERVER_ERROR",
-                        "key [%s] at index %d is not a type of String, but %s", 
-                        k.toString(), i, k.getClass());
-            }
-            m.put((String)k, v);
-        }
+        puts(m, args);
         return m;
+    }
+    
+    static void puts(TypeMap m, Object ... args) {
+    	if(args.length % 2 == 1) {
+    		throw new RuntimeException("(key, value) mismatch: ");
+    	}
+    	for (int i = 0; i < args.length; i+=2) {
+    		Object k = args[i];
+    		Object v = args[i+1];
+    		if(k.getClass() != String.class) {
+    			throw new BeautDbException(
+    					500, 
+    					"SERVER_ERROR",
+    					"key [%s] at index %d is not a type of String, but %s", 
+    					k.toString(), i, k.getClass());
+    		}
+    		m.put((String)k, v);
+    	}
+    	
     }
 
 }

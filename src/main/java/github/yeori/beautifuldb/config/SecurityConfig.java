@@ -1,6 +1,7 @@
 package github.yeori.beautifuldb.config;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import github.yeori.beautifuldb.dao.Enc;
 
@@ -34,11 +39,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		// TODO Auto-generated method stub
 		// super.configure(http);
-		http.authorizeRequests()
-			.antMatchers("/", "/js/**", "/css/**", "/img/**", "/login", "/favicon.ico")
+		http
+			.authorizeRequests()
+//			.antMatchers("/**").permitAll()
+//			.and()
+//			.authorizeRequests()
+			.antMatchers("/", "/js/**", "/css/**", "/img/**", "/favicon.ico",  
+					"/login", "/oauth/**", "/member", "/join")
 				.permitAll()
 			.anyRequest()
 				.authenticated()
+			.and()
+				.cors()
 			.and()
 				.formLogin()
 					.loginPage(defaultLoginPage)
@@ -46,12 +58,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					.defaultSuccessUrl("/login/success")
 			.and()
 				.exceptionHandling().authenticationEntryPoint(new UnAuthenticated(defaultLoginPage))
-			;
-//				.and()
-//				.csrf().disable();
+			.and()
+				.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 	}
 	
-	
+	@Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowedOrigins(Arrays.asList("http://dev.beautifuldb.kr"));
+        config.setAllowedHeaders(Arrays.asList("*"));
+        config.setAllowedMethods(Arrays.asList("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
 	
 	@Bean
 	AuthenticationProvider authProvider() {

@@ -1,10 +1,15 @@
 package github.yeori.beautifuldb;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
+
+import github.yeori.beautifuldb.model.schema.EdgeDto;
+import github.yeori.beautifuldb.model.schema.Table;
 
 public class TypeMap extends HashMap<String, Object> {
 

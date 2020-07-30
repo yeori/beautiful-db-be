@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 			.antMatchers("/", "/js/**", "/css/**", "/img/**", "/favicon.ico",
-					"/oauth/**", "/member", "/join", "/ready")
+					"/oauth/**", "/member", "/join", "/ready", "/schema/**")
 				.permitAll()
 			.anyRequest()
 				.authenticated()
@@ -57,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 				.exceptionHandling().authenticationEntryPoint(new UnAuthenticated(defaultLoginPage))
 			.and()
-				.csrf().csrfTokenRepository(tokenRepository());
+				.csrf().disable();//.csrfTokenRepository(tokenRepository());
 	}
 	
 	@Bean CsrfTokenRepository tokenRepository() {

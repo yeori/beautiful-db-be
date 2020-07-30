@@ -22,7 +22,7 @@ public class Res {
         return m;
     }
     
-    static void puts(TypeMap m, Object ... args) {
+    public static TypeMap puts(TypeMap m, Object ... args) {
     	if(args.length % 2 == 1) {
     		throw new RuntimeException("(key, value) mismatch: ");
     	}
@@ -38,6 +38,7 @@ public class Res {
     		}
     		m.put((String)k, v);
     	}
+    	return m;
     	
     }
 

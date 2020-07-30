@@ -18,6 +18,12 @@ public class BeautDbException extends RuntimeException {
 		this.errorCode = errorCode;
 		this.detailMessage = String.format(format, args);
 	}
+	public BeautDbException(int resCode, String errorCode) {
+		super(errorCode);
+		this.responseCode = resCode;
+		this.errorCode = errorCode;
+		this.detailMessage = errorCode;
+	}
 	public String getErrorCode() {
 		return errorCode;
 	}

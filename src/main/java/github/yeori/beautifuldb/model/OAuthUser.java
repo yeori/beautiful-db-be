@@ -1,6 +1,7 @@
 package github.yeori.beautifuldb.model;
 
 import github.yeori.beautifuldb.TypeMap;
+import github.yeori.beautifuldb.model.user.OAuthAccount;
 
 public class OAuthUser {
 
@@ -28,5 +29,13 @@ public class OAuthUser {
 
 	public String getId() {
 		return res.getStr("id");
+	}
+
+	public OAuthAccount toOAuthAccount() {
+		OAuthAccount acc = new OAuthAccount();
+		acc.setId(getId());
+		acc.setEmail(getEmail());
+		acc.setOrigin(getOrigin());
+		return acc;
 	}
 }

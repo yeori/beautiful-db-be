@@ -8,6 +8,8 @@ import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import github.yeori.beautifuldb.model.user.User;
+
 public class UserWrapper implements UserDetails, CredentialsContainer {
 	
 	final private static List<GrantedAuthority> USER_ROLES = Arrays.asList(new NormalRole());
@@ -31,7 +33,8 @@ public class UserWrapper implements UserDetails, CredentialsContainer {
 
 	@Override
 	public String getUsername() {
-		return target.getEmail();
+		// FIXME OAuthAccount로 변경해야함
+		return null; //target.getEmail();
 	}
 
 	@Override

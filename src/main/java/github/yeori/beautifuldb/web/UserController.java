@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import github.yeori.beautifuldb.Res;
 import github.yeori.beautifuldb.TypeMap;
-import github.yeori.beautifuldb.model.User;
+import github.yeori.beautifuldb.model.user.User;
 import github.yeori.beautifuldb.service.UserService;
 
 @RestController

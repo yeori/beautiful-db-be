@@ -12,20 +12,20 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import github.yeori.dtogen.ObjectStamper;
+import github.yeori.dtommic.DtoMimic;
 
 class WithMapField {
 
 	@Test
 	void test() {
-		ObjectStamper gen = new ObjectStamper();
+		DtoMimic gen = new DtoMimic();
 		Map<Integer, Book> books = new HashMap<>();
 		books.put(12, new Book("A", "aaaa"));
 		books.put(13, new Book("B", "bbbb"));
 		books.put(17, new Book("C", "ccc"));
 		Lib lib = new Lib(books);
 		lib.names = new ArrayList<>(Arrays.asList("x", "y", "z"));
-		Lib copy = gen.stamp(lib, "books.isbn");
+		Lib copy = gen.mimic(lib, "books.isbn");
 		assertTrue(lib.books != copy.books);
 		assertEquals(lib.books, copy.books);
 		assertEquals(lib.names, copy.names);

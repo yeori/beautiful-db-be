@@ -1,4 +1,4 @@
-package github.yeori.dtogen;
+package github.yeori.dtommic;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -17,7 +17,7 @@ import java.util.Set;
 import github.yeori.dtogen.rule.IPropertyRule;
 import github.yeori.dtogen.rule.Rules;
 
-public class ObjectStamper {
+public class DtoMimic {
 	private static Set<Class<?>> PRIMITIVES = Set.of(
 		Boolean.class,
 		Number.class,
@@ -27,21 +27,21 @@ public class ObjectStamper {
 		LocalTime.class
 	);
 	
-	public <T> T stamp(T data) {
-		return stamp(data, (Class<T>)data.getClass());
+	public <T> T mimic(T data) {
+		return mimic(data, (Class<T>)data.getClass());
 	}
-	public <T> T stamp(T data, String ... exclusionRules) {
-		return stamp(data, (Class<T>)data.getClass(), exclusionRules);
+	public <T> T mimic(T data, String ... exclusionRules) {
+		return mimic(data, (Class<T>)data.getClass(), exclusionRules);
 	}
-	public <T, U> U stamp(T data, Class<U> clazz) {
-		return stamp(data, clazz, new String[0]);
+	public <T, U> U mimic(T data, Class<U> clazz) {
+		return mimic(data, clazz, new String[0]);
 	}
-	public <T, U> U stamp(T data, Class<U> clazz, String ... exclusionRules) {
+	public <T, U> U mimic(T data, Class<U> clazz, String ... exclusionRules) {
 		if (data == null) {
 			return null;
 		}
 		IPropertyRule rule = Rules.parseRules(exclusionRules);
-		StamperContext ctx = new StamperContext();
+		DtoMimicContext ctx = new DtoMimicContext();
 		ctx.enter("");
 		if (isList(data)) {
 			return (U) toList(ctx, (List)data, rule);
@@ -56,7 +56,7 @@ public class ObjectStamper {
 		}
 	}
 
-	<T, U> U toDto(StamperContext ctx, T data, Class<U> cls, IPropertyRule rule) {
+	<T, U> U toDto(DtoMimicContext ctx, T data, Class<U> cls, IPropertyRule rule) {
 		if (data == null) {
 			return null;
 		}
@@ -126,7 +126,7 @@ public class ObjectStamper {
 	private boolean isArray(Object value) {
 		return value.getClass().isArray();
 	}
-	<T> List<? super T> toList(StamperContext ctx, List<? extends T> src, IPropertyRule rule) {
+	<T> List<? super T> toList(DtoMimicContext ctx, List<? extends T> src, IPropertyRule rule) {
 		try {
 			List<? super T> dst = new ArrayList<>();
 			for(T elem : src) {
@@ -140,7 +140,7 @@ public class ObjectStamper {
 		}
 	}
 	@SuppressWarnings("unchecked")
-	<K,V> Map<K, ? super V> toMap(StamperContext ctx, Map<K, ? extends V> src, IPropertyRule rule) {
+	<K,V> Map<K, ? super V> toMap(DtoMimicContext ctx, Map<K, ? extends V> src, IPropertyRule rule) {
 		try {
 			Map<K, ? super V> dst = new HashMap<>();
 			for(K k : src.keySet()) {
@@ -153,7 +153,7 @@ public class ObjectStamper {
 			throw new RuntimeException(e);
 		}
 	}
-	<T> Set<? super T> toSet(StamperContext ctx, Set<? extends T> src, IPropertyRule rule){
+	<T> Set<? super T> toSet(DtoMimicContext ctx, Set<? extends T> src, IPropertyRule rule){
 		try {
 			Set<T> dst = new HashSet<>();
 			for(T elem : src) {
@@ -166,7 +166,7 @@ public class ObjectStamper {
 			throw new RuntimeException(e);
 		}
 	}
-	Object toArray(StamperContext ctx, Object src, IPropertyRule rule) {
+	Object toArray(DtoMimicContext ctx, Object src, IPropertyRule rule) {
 		int len = Array.getLength(src);
 		Class<?> elemType = src.getClass().getComponentType();
 		Object dst = Array.newInstance(elemType, len);

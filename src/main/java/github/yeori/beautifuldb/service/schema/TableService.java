@@ -7,18 +7,18 @@ import org.springframework.stereotype.Service;
 
 import github.yeori.beautifuldb.dao.schema.ITableDao;
 import github.yeori.beautifuldb.model.schema.Table;
-import github.yeori.dtogen.ObjectStamper;
+import github.yeori.dtommic.DtoMimic;
 
 @Service
 @Transactional
 public class TableService {
 
 	@Autowired ITableDao tableDao;
-	ObjectStamper gen = new ObjectStamper();
+	DtoMimic dtoMimicker = new DtoMimic();
 	
 	public Table findTable(long tableSeq) {
 		Table table = tableDao.findBySeq(tableSeq);
-		return gen.stamp(
+		return dtoMimicker.mimic(
 				table,
 				Table.class,
 				"schema",

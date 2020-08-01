@@ -15,7 +15,7 @@ import github.yeori.beautifuldb.model.UserWrapper;
 import github.yeori.beautifuldb.model.user.OAuthAccount;
 import github.yeori.beautifuldb.model.user.User;
 import github.yeori.beautifuldb.service.oauth2.GoogleOAuth2Service;
-import github.yeori.dtogen.ObjectStamper;
+import github.yeori.dtommic.DtoMimic;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -27,7 +27,7 @@ public class UserService implements UserDetailsService {
 	GoogleOAuth2Service oauthService;
 
 	@Autowired
-	ObjectStamper stamper;
+	DtoMimic dtoMimicker;
 	
 	@Transactional(readOnly = true)
 	public User findUser(String email) {
@@ -37,7 +37,7 @@ public class UserService implements UserDetailsService {
 		}
 		User user = acc.getUserRef();
 		user.setLoginAccount(acc);
-		return stamper.stamp(user, "password", "loginAccount.userRef");
+		return dtoMimicker.mimic(user, "password", "loginAccount.userRef");
 	}
 
 	@Override

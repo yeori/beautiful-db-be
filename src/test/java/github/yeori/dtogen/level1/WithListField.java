@@ -9,11 +9,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import github.yeori.dtogen.ObjectStamper;
+import github.yeori.dtommic.DtoMimic;
 
 class WithListField {
 
-	ObjectStamper gen = new ObjectStamper();
+	DtoMimic gen = new DtoMimic();
 	
 	@Test
 	void test() {
@@ -24,7 +24,7 @@ class WithListField {
 			new Order(14L, LocalDateTime.now())
 		)));
 		
-		User copy = gen.stamp(jack);
+		User copy = gen.mimic(jack);
 		assertTrue (jack != copy);
 		assertTrue(jack.getName() == copy.getName());
 		

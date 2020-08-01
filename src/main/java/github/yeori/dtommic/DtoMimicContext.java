@@ -1,4 +1,4 @@
-package github.yeori.dtogen;
+package github.yeori.dtommic;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -11,17 +11,16 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class StamperContext {
+public class DtoMimicContext {
 
 	private List<String> props;
 	private int level;
 	
-	private Map<Class<?>, Map<Field, Method[]>> accessorMap;
-	private Lock lock = new ReentrantLock();
+	private static Map<Class<?>, Map<Field, Method[]>> accessorMap = new HashMap<>();
+	private static Lock lock = new ReentrantLock();
 	
-	StamperContext() {
+	DtoMimicContext() {
 		this.props = new ArrayList<>();
-		this.accessorMap = new HashMap<>();
 	}
 	
 	void enter(String prop) {
@@ -51,7 +50,7 @@ public class StamperContext {
 		try {
 			if (accessorMap.containsKey(clazz)) {
 				return accessorMap.get(clazz);
-			}			
+			}
 		} finally {
 			lock.unlock();
 		}
@@ -78,9 +77,7 @@ public class StamperContext {
 		System.out.printf(">>> %.6f\n", s/1_000_000_000.0);
 		lock.lock();
 		try {
-			if (!accessorMap.containsKey(clazz)) {
-				accessorMap.put(clazz, accessors);				
-			}
+			accessorMap.putIfAbsent(clazz, accessors);
 			return accessors;
 		} finally {
 			lock.unlock();

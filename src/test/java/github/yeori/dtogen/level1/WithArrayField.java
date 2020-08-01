@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-import github.yeori.dtogen.ObjectStamper;
+import github.yeori.dtommic.DtoMimic;
 
 class WithArrayField {
 
@@ -16,8 +16,8 @@ class WithArrayField {
 		src.setName("jack");
 		src.setEmails(new String[] {"a@a.com", "b@b.com"}); 
 		
-		ObjectStamper gen = new ObjectStamper();
-		User cloned = gen.stamp(src);
+		DtoMimic gen = new DtoMimic();
+		User cloned = gen.mimic(src);
 		assertTrue(src != cloned) ;
 		assertTrue (src.getEmails() != cloned.getEmails());
 		assertEquals(src.getEmails().length, cloned.getEmails().length);

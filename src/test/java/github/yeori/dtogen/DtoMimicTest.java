@@ -10,8 +10,9 @@ import github.yeori.beautifuldb.model.schema.Schema;
 import github.yeori.beautifuldb.model.schema.Table;
 import github.yeori.beautifuldb.model.schema.Vendor;
 import github.yeori.beautifuldb.model.user.User;
+import github.yeori.dtommic.DtoMimic;
 
-class ObjectStamperTest {
+class DtoMimicTest {
 
 	@Test
 	void test() {
@@ -32,8 +33,8 @@ class ObjectStamperTest {
 		c0.setTable(table);
 		table.getColumns().add(c1);
 		
-		ObjectStamper gen = new ObjectStamper();
-		Table cloned = gen.stamp(table, Table.class, "columns.table", "schema");
+		DtoMimic gen = new DtoMimic();
+		Table cloned = gen.mimic(table, Table.class, "columns.table", "schema");
 		System.out.println(cloned);
 		for(Column c: cloned.getColumns()) {
 			System.out.println("> " + c.toString());

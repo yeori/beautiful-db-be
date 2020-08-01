@@ -7,18 +7,18 @@ import org.springframework.stereotype.Service;
 
 import github.yeori.beautifuldb.dao.schema.ISchemaDao;
 import github.yeori.beautifuldb.model.schema.Schema;
-import github.yeori.dtogen.ObjectStamper;
+import github.yeori.dtommic.DtoMimic;
 
 @Service
 public class SchemaService {
 
 	@Autowired ISchemaDao schemaDao;
-	@Autowired ObjectStamper stamper;
+	@Autowired DtoMimic dtoMimicker;
 	
 	@Transactional
 	public Schema findSchemaFully(long schemaSeq) {
 		Schema schema = schemaDao.getOne(schemaSeq);
-		return stamper.stamp(schema, Schema.class, 
+		return dtoMimicker.mimic(schema, Schema.class, 
 				"owner",
 				"tables.schema",
 				"tables.columns.table",

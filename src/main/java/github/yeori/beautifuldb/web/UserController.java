@@ -44,11 +44,10 @@ public class UserController {
 		
 		return Res.success("ready", true, "_csrf", csrfValue);
 	}
-	@PostMapping("/member")
-	public Object checkMember(@RequestBody TypeMap req) {
-		User user = userService.checkExistingMember(req.getStr("accessToken"), req.getStr("origin"));
-		
-		return Res.with(user != null, "user", user);
+	@PostMapping("/loginByOAuth")
+	public Object loginByOAuth(@RequestBody TypeMap req) {
+		TypeMap res = userService.login(req.getStr("accessToken"), req.getStr("origin"));
+		return Res.with(res.containsKey("user"), res);
 	}
 	@PostMapping("/join")
 	public Object join(@RequestBody TypeMap req) {

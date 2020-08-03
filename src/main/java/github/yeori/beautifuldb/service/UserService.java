@@ -9,12 +9,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import github.yeori.beautifuldb.TypeMap;
 import github.yeori.beautifuldb.dao.user.IUserDao;
 import github.yeori.beautifuldb.model.OAuthUser;
 import github.yeori.beautifuldb.model.UserWrapper;
 import github.yeori.beautifuldb.model.user.OAuthAccount;
 import github.yeori.beautifuldb.model.user.User;
 import github.yeori.beautifuldb.service.oauth2.GoogleOAuth2Service;
+import github.yeori.beautifuldb.service.token.JwtService;
 import github.yeori.dtommic.DtoMimic;
 
 @Service
@@ -25,6 +27,9 @@ public class UserService implements UserDetailsService {
 	
 	@Autowired
 	GoogleOAuth2Service oauthService;
+	
+	@Autowired
+	JwtService jwtSerivce;
 
 	@Autowired
 	DtoMimic dtoMimicker;
@@ -45,11 +50,15 @@ public class UserService implements UserDetailsService {
 		return new UserWrapper(findUser(email));
 	}
 	
-	public User checkExistingMember(String accessToken, String origin) {
+	public TypeMap login(String accessToken, String origin) {
 		OAuthUser oAuthUser = oauthService.getUserInfo(accessToken);
 		User user = findUser(oAuthUser.getEmail());
-		
-		return user;
+		TypeMap res = TypeMap.with("user", user);
+		if (user != null) {
+			String jwtToken = jwtSerivce.createToken(user);
+			res.put("token", jwtToken);
+		}
+		return res;
 	}
 
 	public User joinUser(String accessToken, String origin) {

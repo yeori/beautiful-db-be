@@ -34,7 +34,7 @@ public class UserWrapper implements UserDetails, CredentialsContainer {
 	@Override
 	public String getUsername() {
 		// FIXME OAuthAccount로 변경해야함
-		return null; //target.getEmail();
+		return target.getLoginAccount().getEmail();
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class UserWrapper implements UserDetails, CredentialsContainer {
 		
 		@Override
 		public String getAuthority() {
-			return "USER";
+			return "ROLE_USER";
 		}
 	}
 	
@@ -69,7 +69,7 @@ public class UserWrapper implements UserDetails, CredentialsContainer {
 		
 		@Override
 		public String getAuthority() {
-			return "ADMIN";
+			return "ROLE_ADMIN";
 		}
 	}
 

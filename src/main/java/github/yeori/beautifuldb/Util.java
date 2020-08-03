@@ -1,7 +1,10 @@
 package github.yeori.beautifuldb;
 
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.http.auth.AuthOption;
 
 public class Util {
 
@@ -42,11 +45,31 @@ public class Util {
     	return camelToSnake(null, cmf, suffix);
     }
     /**
-     * roomName => room_name[suffix]
+     * roomName => room_name
      * @param cmf camel-case string
      * @return snake case string
      */
     public static String camelToSnake(String cmf) {
     	return camelToSnake(null, cmf, null);
     }
+	public static Date during(String format) {
+		String fmt = format.toLowerCase();
+		int p1 = fmt.lastIndexOf("day");
+		if (p1 > 0) {
+			fmt = fmt.substring(0, p1).trim();
+			int day = Integer.parseInt(fmt);
+			long time = System.currentTimeMillis() + day*24*60*60*1000L;
+			return new Date(time);
+		} else  {
+			throw new BeautDbException(500, "INVALID_PARAM", "invalid date format: [%s]", format);
+		}
+	}
+	
+	public static String parseBearer(String authrizationValue) {
+		if (authrizationValue != null && authrizationValue.startsWith(("Bearer "))) {
+			return authrizationValue.substring("Bearer ".length());
+		} else {
+			return null;
+		}
+	}
 }

@@ -11,20 +11,30 @@ public class Res {
         return m;
     }
 
+    public static TypeMap with(boolean success, TypeMap src) {
+    	TypeMap m = success(success);
+    	m.putAll(src);
+    	return m;
+    }
     public static TypeMap with(boolean success, Object ... args) {
     	TypeMap m = success(success);
     	puts(m, args);
     	return m;
     }
-    public static Object success(Object ... args) {
+    public static TypeMap success(Object ... args) {
         TypeMap m = success(true);
         puts(m, args);
         return m;
     }
+    public static TypeMap failure(Object ... args) {
+    	TypeMap m = success(false);
+    	puts(m, args);
+    	return m;
+    }
     
     public static TypeMap puts(TypeMap m, Object ... args) {
     	if(args.length % 2 == 1) {
-    		throw new RuntimeException("(key, value) mismatch: ");
+    		throw new RuntimeException("(key, value) pairs mismatch [length: " + args.length + "]");
     	}
     	for (int i = 0; i < args.length; i+=2) {
     		Object k = args[i];

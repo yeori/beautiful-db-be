@@ -101,7 +101,7 @@ public class TypeMap extends HashMap<String, Object> {
     private Object exception(String format, Object ... args) {
         throw new RuntimeException(String.format(format, args));
     }
-    public static TypeMap with(String key, String value) {
+    public static TypeMap with(String key, Object value) {
         TypeMap m = new TypeMap(1);
         m.put(key, value);
         return m;

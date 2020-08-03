@@ -16,11 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
-
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import javax.persistence.OrderBy;
 
 @NamedEntityGraph(
 	name="table-based-graph",
@@ -47,6 +43,7 @@ public class Table {
 	private Schema schema;
 	
 	@OneToMany(mappedBy = "table", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OrderBy("ordernum")
 	private List<Column> columns = new ArrayList<>();
 	
 	@Embedded

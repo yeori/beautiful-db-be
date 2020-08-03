@@ -2,12 +2,15 @@ package github.yeori.beautifuldb.config;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -16,16 +19,22 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserCache;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.cache.SpringCacheBasedUserCache;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import github.yeori.beautifuldb.dao.Enc;
+import github.yeori.beautifuldb.BeautDbException;
+import github.yeori.beautifuldb.config.parts.JwtPasswordCheck;
+import github.yeori.beautifuldb.config.parts.JwtTokenDecoingFilter;
+import github.yeori.beautifuldb.service.token.JwtService;
 
 @Configuration
 @EnableWebSecurity
@@ -36,28 +45,38 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	UserDetailsService userDetailService;
 	
+	@Autowired
+	JwtService jwtService;
+	
+	@Value("${beautifuldb.cors.allowed-urls}")
+	List<String> corsAllowedUrls;
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		// TODO Auto-generated method stub
-		// super.configure(http);
 		http
 			.authorizeRequests()
-			.antMatchers("/", "/js/**", "/css/**", "/img/**", "/favicon.ico",
-					"/oauth/**", "/member", "/join", "/ready", "/schema/**")
-				.permitAll()
-			.anyRequest()
-				.authenticated()
+				.antMatchers("/", "/js/**", "/css/**", "/img/**", "/favicon.ico", "/error",
+					"/oauth/**", "/loginByOAuth", "/join", "/ready")
+				.anonymous()
+				.anyRequest().authenticated()
 			.and()
 				.cors()
 			.and()
-				.formLogin()
-					.loginPage(defaultLoginPage)
-					.loginProcessingUrl("/doLogin")
-					.defaultSuccessUrl("/login/success")
+				.csrf().csrfTokenRepository(tokenRepository())
 			.and()
+				.sessionManagement().disable()
+//				.anonymous().disable()
+//			.and()
+			.formLogin()
+					.disable()
+//					.loginPage(defaultLoginPage)
+//					.loginProcessingUrl("/doLogin")
+//					.defaultSuccessUrl("/login/success")
+//			.and()
 				.exceptionHandling().authenticationEntryPoint(new UnAuthenticated(defaultLoginPage))
 			.and()
-				.csrf().disable();//.csrfTokenRepository(tokenRepository());
+				.addFilterBefore(jwtTokenDecoder(), UsernamePasswordAuthenticationFilter.class)
+			;
 	}
 	
 	@Bean CsrfTokenRepository tokenRepository() {
@@ -65,11 +84,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 	@Bean
     public CorsConfigurationSource corsConfigurationSource() {
-		String devServerurl = "http://dev.beautifuldb.kr";
-		String prodServerUrl = "https://beautifuldb.kr";
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(Arrays.asList(devServerurl, prodServerUrl));
+        config.setAllowedOrigins(corsAllowedUrls);
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowedMethods(Arrays.asList("*"));
         config.setAllowCredentials(true);
@@ -83,39 +100,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	AuthenticationProvider authProvider() {
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 		provider.setUserDetailsService(userDetailService);
-		provider.setPasswordEncoder(sha256Encoder());
+		provider.setPasswordEncoder(passwordVerifier());
+		provider.setUserCache(userCache());
 		return provider;
 	}
-
 	
 	@Bean
-	public PasswordEncoder sha256Encoder() {
-		return new Sha256Encoder();
+	public PasswordEncoder passwordVerifier() {
+		// return new Sha256Encoder();
+		return new JwtPasswordCheck();
 	}
-
+	
+	@Bean
+	public JwtTokenDecoingFilter jwtTokenDecoder() throws Exception {
+		return new JwtTokenDecoingFilter(jwtService, authenticationManager());
+	}
+	@Bean
+	public UserCache userCache() {
+		return new SpringCacheBasedUserCache(new ConcurrentMapCache("authentication-cache"));
+	}
+	
 	@Override
 	protected UserDetailsService userDetailsService() {
 		return userDetailService;
-	}
-	
-	static class Sha256Encoder implements PasswordEncoder {
-		/*
-		 * db에서 sha256으로 비번을 encoding 하고 있음
-		 * 
-		 * 아래는 비번 '1234'를 암호화하는 쿼리
-		 * 
-		 *   INSERT INTO users(email, `password`) VALUES ('test@test.com', SHA2('1234', 256));
-		 */
-		@Override
-		public String encode(CharSequence rawPassword) {
-			return Enc.sha256(rawPassword.toString());
-		}
-
-		@Override
-		public boolean matches(CharSequence rawPassword, String encodedPassword) {
-			return encode(rawPassword).equals(encodedPassword);
-		}
-		
 	}
 	
 	// static class UnAuthenticated implements AuthenticationEntryPoint {
@@ -132,7 +139,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				AuthenticationException authException) throws IOException, ServletException {
 			// throw 401 response
 //			String xhr = req.getHeader("X-Requested-With");
-			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);	
+			Object exceptionValue = req.getAttribute("BEAUTIFULDB_APP_EXCEPTION");
+			if (exceptionValue != null) {
+				BeautDbException e = (BeautDbException) exceptionValue;
+				res.setContentType("application/json; charset=UTF-8");
+				String msg = e.asJson();
+				res.getWriter().write(msg);
+				res.setStatus(e.getResponseCode());
+				res.setContentLength(msg.length());
+				// res.sendError(e.getResponseCode());
+				res.getWriter().flush();
+			} else {
+				// 
+				res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			}
 //			if ("XMLHttpRequest".equals(xhr)) {
 //			} else {
 //				super.commence(req, res, authException);

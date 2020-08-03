@@ -33,4 +33,10 @@ public class BeautDbException extends RuntimeException {
 	public String getDetailMessage() {
 		return detailMessage;
 	}
+	public String asJson() {
+		String format = "{\"success\": false, \"cause\": \"@cause\", \"desc\": \"@desc\"}";
+		return format
+			.replace("@cause", this.errorCode)
+			.replace("@desc", getDetailMessage());
+	}
 }

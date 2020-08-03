@@ -17,7 +17,7 @@ import github.yeori.beautifuldb.model.user.OAuthAccount;
 import github.yeori.beautifuldb.model.user.User;
 import github.yeori.beautifuldb.service.oauth2.GoogleOAuth2Service;
 import github.yeori.beautifuldb.service.token.JwtService;
-import github.yeori.dtommic.DtoMimic;
+import github.yeori.dtomimic.DtoMimic;
 
 @Service
 public class UserService implements UserDetailsService {

@@ -1,4 +1,4 @@
-package github.yeori.dtommic;
+package github.yeori.dtomimic;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

@@ -12,7 +12,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import github.yeori.dtommic.DtoMimic;
+import github.yeori.dtomimic.DtoMimic;
 
 class WithMapField {
 

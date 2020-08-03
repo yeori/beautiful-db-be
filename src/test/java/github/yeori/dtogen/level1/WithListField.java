@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import github.yeori.dtommic.DtoMimic;
+import github.yeori.dtomimic.DtoMimic;
 
 class WithListField {
 

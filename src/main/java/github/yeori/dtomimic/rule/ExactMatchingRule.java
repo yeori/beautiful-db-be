@@ -1,4 +1,4 @@
-package github.yeori.dtogen.rule;
+package github.yeori.dtomimic.rule;
 
 class ExactMatchingRule implements IPropertyRule {
 

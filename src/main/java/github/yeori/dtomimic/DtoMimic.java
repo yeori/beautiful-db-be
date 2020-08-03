@@ -1,4 +1,4 @@
-package github.yeori.dtommic;
+package github.yeori.dtomimic;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import github.yeori.dtogen.rule.IPropertyRule;
-import github.yeori.dtogen.rule.Rules;
+import github.yeori.dtomimic.rule.IPropertyRule;
+import github.yeori.dtomimic.rule.Rules;
 
 public class DtoMimic {
 	private static Set<Class<?>> PRIMITIVES = Set.of(

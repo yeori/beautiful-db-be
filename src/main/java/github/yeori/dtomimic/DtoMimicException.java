@@ -1,4 +1,4 @@
-package github.yeori.dtommic;
+package github.yeori.dtomimic;
 
 public class DtoMimicException extends RuntimeException {
 

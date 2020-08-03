@@ -1,11 +1,11 @@
-package github.yeori.dtogen.rule;
+package github.yeori.dtomimic.rule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import github.yeori.dtommic.DtoMimicException;
+import github.yeori.dtomimic.DtoMimicException;
 
 public class Rules {
 

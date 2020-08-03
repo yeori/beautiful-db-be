@@ -3,7 +3,7 @@ package github.yeori.beautifuldb.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import github.yeori.dtommic.DtoMimic;
+import github.yeori.dtomimic.DtoMimic;
 
 @Configuration
 public class AppConfig {

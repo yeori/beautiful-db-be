@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import github.yeori.beautifuldb.dao.schema.ITableDao;
 import github.yeori.beautifuldb.model.schema.Table;
-import github.yeori.dtommic.DtoMimic;
+import github.yeori.dtomimic.DtoMimic;
 
 @Service
 @Transactional

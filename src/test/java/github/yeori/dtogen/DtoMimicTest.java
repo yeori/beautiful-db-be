@@ -10,7 +10,7 @@ import github.yeori.beautifuldb.model.schema.Schema;
 import github.yeori.beautifuldb.model.schema.Table;
 import github.yeori.beautifuldb.model.schema.Vendor;
 import github.yeori.beautifuldb.model.user.User;
-import github.yeori.dtommic.DtoMimic;
+import github.yeori.dtomimic.DtoMimic;
 
 class DtoMimicTest {
 

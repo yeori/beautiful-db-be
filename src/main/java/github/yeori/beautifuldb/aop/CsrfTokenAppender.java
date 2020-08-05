@@ -58,6 +58,8 @@ public class CsrfTokenAppender {
 				appendCsrfToken(Map.class.cast(res));
 			}
 			return res;
+		} catch(BeautDbException e) {
+			throw e;
 		} catch (Throwable e) {
 			throw new BeautDbException(e, 500, "SERVER_ERROR");
 		}

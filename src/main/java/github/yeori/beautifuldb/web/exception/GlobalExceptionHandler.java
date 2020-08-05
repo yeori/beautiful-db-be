@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
 		
 		Map<String, Object> body = Res.failure(
 				"cause", e.getErrorCode(),
-				"desc", e.getMessage());
+				"desc", e.getDetailMessage());
 		return new ResponseEntity<Map<String, Object>>(body, status);
 	}
 	

@@ -1,6 +1,7 @@
 package github.yeori.beautifuldb.web;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,13 +15,18 @@ import github.yeori.beautifuldb.Res;
 import github.yeori.beautifuldb.TypeMap;
 import github.yeori.beautifuldb.model.schema.EdgeDto;
 import github.yeori.beautifuldb.model.schema.Schema;
+import github.yeori.beautifuldb.model.schema.VendorColumnType;
 import github.yeori.beautifuldb.service.schema.SchemaService;
+import github.yeori.beautifuldb.service.schema.VendorService;
 
 @RestController
 public class SchemaController {
 
 	@Autowired
 	SchemaService schemaService;
+	
+	@Autowired VendorService vendorService;
+	
 	/**
 	 * README https://www.baeldung.com/get-user-in-spring-security
 	 * @param principal
@@ -52,6 +58,7 @@ public class SchemaController {
 		if (schema == null) {
 			throw new BeautDbException(404, "NO_SUCH_SCHEMA");
 		}
+		List<VendorColumnType> types = vendorService.listColumnTypes(schema.getVendor().getSeq());
 		TypeMap map = new TypeMap();
 		return Res.success(
 			"schema",
@@ -59,8 +66,15 @@ public class SchemaController {
 				"tables", schema.getTables(),
 				"edges", EdgeDto.toDto(schema.getEdges()),
 				"name", schema.getName(),
-				"seq", schema.getSeq()
+				"seq", schema.getSeq(),
+				"vendor", schema.getVendor(),
+				"columnTypes", types
 			)
 		);
+	}
+	@GetMapping("/vendor/column-types/{vendor}")
+	public Object listColumtypesByVendor(@PathVariable Integer vendorSeq) {
+		List<VendorColumnType> types = vendorService.listColumnTypes(vendorSeq);
+		return Res.success("types", types);
 	}
 }

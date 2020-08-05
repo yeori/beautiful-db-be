@@ -1,10 +1,10 @@
 package github.yeori.beautifuldb;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.http.auth.AuthOption;
 
 public class Util {
 
@@ -71,5 +71,12 @@ public class Util {
 		} else {
 			return null;
 		}
+	}
+	
+	public static String [] split (String src, String delim, UnaryOperator<String> conv) {
+		return Arrays
+				.stream(src.split(delim))
+				.map(s -> conv.apply(s))
+				.toArray(n -> new String[n]);
 	}
 }

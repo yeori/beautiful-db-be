@@ -24,7 +24,15 @@ public class ColumnController {
 	
 	@PutMapping("/column/{columnSeq}")
 	public Object updateColumn(@PathVariable Long columnSeq, @RequestBody TypeMap req) {
-		int s = columnService.updateColumn(columnSeq, req.getStr("prop"), req.get("value"));
-		return Res.with(true, "data", s);
+		String prop = req.getStr("prop");
+		Object value = req.get("value");
+		Object data = null;
+		if ("TYPE".equals(prop.toUpperCase())) {
+			data = columnService.updateType(columnSeq, prop, (String)value);
+		} else {
+			data = columnService.updateColumn(columnSeq, prop, value);
+			
+		}
+		return Res.with(true, "prop", prop, "value", data);
 	}
 }

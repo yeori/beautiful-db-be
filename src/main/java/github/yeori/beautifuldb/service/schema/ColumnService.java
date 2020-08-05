@@ -10,14 +10,20 @@ import org.springframework.transaction.annotation.Transactional;
 import github.yeori.beautifuldb.Reflections;
 import github.yeori.beautifuldb.dao.schema.IColumnDao;
 import github.yeori.beautifuldb.dao.schema.ITableDao;
+import github.yeori.beautifuldb.dao.schema.IVendorColumnTypeDao;
 import github.yeori.beautifuldb.model.schema.Column;
 import github.yeori.beautifuldb.model.schema.Table;
+import github.yeori.beautifuldb.model.schema.Vendor;
+import github.yeori.beautifuldb.service.parser.DbParserService;
 
 @Service
 public class ColumnService {
 
 	@Autowired ITableDao tableDao;
 	@Autowired IColumnDao columnDao;
+	@Autowired IVendorColumnTypeDao columnTypeDao;
+	
+	@Autowired DbParserService parserService;
 	
 	@Transactional
 	public Column insertColumn(Long tableSeq, Column col) {
@@ -55,9 +61,19 @@ public class ColumnService {
 	}
 	
 	@Transactional
-	public int updateColumn(Long columnSeq, String prop, Object value) {
+	public Object updateColumn(Long columnSeq, String prop, Object value) {
 		Column column = columnDao.getOne(columnSeq);
 		Reflections.callSetter(Column.class, column, prop, value);
-		return -1;
+		return value;
+	}
+
+	@Transactional
+	public String[] updateType(Long columnSeq, String prop, String value) {
+		Column column = columnDao.getOne(columnSeq);
+		Vendor vendor = column.getTable().getSchema().getVendor();
+		String [] types = parserService.parseTypeComponent(vendor, value);
+		column.setType(types[0]);
+		column.setMag(types[1]);
+		return types;
 	}
 }

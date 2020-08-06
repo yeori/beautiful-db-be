@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import github.yeori.beautifuldb.BeautDbException;
+import github.yeori.beautifuldb.Error;
 import github.yeori.beautifuldb.Reflections;
 import github.yeori.beautifuldb.dao.schema.IColumnDao;
 import github.yeori.beautifuldb.dao.schema.ITableDao;
@@ -69,7 +71,13 @@ public class ColumnService {
 
 	@Transactional
 	public String[] updateType(Long columnSeq, String prop, String value) {
-		Column column = columnDao.getOne(columnSeq);
+		Column column = columnDao.findById(columnSeq).orElseGet(null);
+		if (column == null) {
+			throw new BeautDbException(
+				404,
+				Error.NO_SUCH_COLUMN.name(),
+				"no column found [%d]", columnSeq);
+		}
 		Vendor vendor = column.getTable().getSchema().getVendor();
 		String [] types = parserService.parseTypeComponent(vendor, value);
 		column.setType(types[0]);

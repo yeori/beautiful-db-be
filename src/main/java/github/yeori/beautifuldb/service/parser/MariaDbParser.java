@@ -31,6 +31,8 @@ class MariaDbParser implements IDbParser{
 		 * VARCHAR(23) => ["VARCHAR", "23"]
 		 * 
 		 * ENUM('Y','N' => ["VARCHAR", "'Y','N'" ]
+		 * 
+		 * INT => ["INT", null]
 		 */
 		int [] mag = magPos(value);
 		String typeNamePart = parseTypeName(value, mag).toUpperCase();
@@ -43,7 +45,7 @@ class MariaDbParser implements IDbParser{
 			specPart = resolveSpecPart(typeNamePart, specPart, spec, mag);
 		}
 		
-		return new String[] {typeNamePart, specPart};
+		return new String[] {typeNamePart, specPart.length() == 0 ? null : specPart};
 	}
 	
 	String compact(String src) {

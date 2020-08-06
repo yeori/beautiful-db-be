@@ -12,19 +12,29 @@ import github.yeori.beautifuldb.dao.schema.IEdgeDao;
 import github.yeori.beautifuldb.model.schema.Column;
 import github.yeori.beautifuldb.model.schema.Edge;
 import github.yeori.beautifuldb.model.schema.Schema;
+import github.yeori.dtomimic.DtoMimic;
 
 @Service
 public class EdgeService {
 
 	@Autowired IEdgeDao edgeDao;
 	@Autowired IColumnDao columnDao;
+	@Autowired DtoMimic dtoMimicker;
 	
 	@Transactional
-	public void createEdge(long fkColumnSeq, long referredColumnSeq) {
+	public Edge createEdge(Long fkColumnSeq, Long referredColumnSeq, Long edgeToDel) {
+		if (edgeToDel != null) {
+			Edge edge = edgeDao.findBySeq(edgeToDel);
+			edgeDao.delete(edge);
+		}
+		return createEdge(fkColumnSeq, referredColumnSeq);
+	}
+	@Transactional
+	public Edge createEdge(Long fkColumnSeq, Long referredColumnSeq) {
 		Column fkColumn = columnDao.findById(fkColumnSeq).orElse(null);
 		checkExist(fkColumn, fkColumnSeq);
 		
-		Column referredColumn = columnDao.getOne(referredColumnSeq);
+		Column referredColumn = columnDao.findById(referredColumnSeq).orElse(null);
 		checkExist(referredColumn, referredColumnSeq);
 		
 		checkSameSchema(fkColumn, referredColumn);
@@ -43,7 +53,12 @@ public class EdgeService {
 		}
 		
 		Edge edge = new Edge(fkColumn, referredColumn);
+		edge.setSchema(fkColumn.getTable().getSchema());
 		edgeDao.save(edge);
+		return dtoMimicker.mimic(edge, Edge.class,
+				"from",
+				"to",
+				"schema");
 	}
 
 	private void checkExist(Column col, long seq) {

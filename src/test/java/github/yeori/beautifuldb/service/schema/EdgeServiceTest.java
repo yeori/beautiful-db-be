@@ -17,7 +17,7 @@ class EdgeServiceTest {
 	@Test
 	void test_foreignkey_추가() {
 //		List<Column> columns = colService.findColumns(11, 4);
-		edgeService.createEdge(11, 4);
+		edgeService.createEdge(11L, 4L);
 //		edgeService.createEdge(888, 7);
 	}
 	

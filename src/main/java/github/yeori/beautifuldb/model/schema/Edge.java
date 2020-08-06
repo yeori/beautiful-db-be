@@ -46,6 +46,9 @@ public class Edge {
 		this.onDelete = Cascading.R;
 	}
 
+	public Edge(Long seq) {
+		this.seq = seq;
+	}
 	public Long getSeq() {
 		return seq;
 	}
@@ -76,5 +79,27 @@ public class Edge {
 	public void setSchema(Schema schema) {
 		this.schema = schema;
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((getSeq() == null) ? 0 : getSeq().hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof Edge))
+			return false;
+		Edge other = (Edge) obj;
+		if (getSeq() == null) {
+			if (other.getSeq() != null)
+				return false;
+		} else if (!getSeq().equals(other.getSeq()))
+			return false;
+		return true;
+	}
+	
 	
 }

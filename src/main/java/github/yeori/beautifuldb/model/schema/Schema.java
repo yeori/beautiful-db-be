@@ -135,13 +135,13 @@ public class Schema {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof Schema))
 			return false;
 		Schema other = (Schema) obj;
-		if (seq == null) {
-			if (other.seq != null)
+		if (getSeq() == null) {
+			if (other.getSeq() != null)
 				return false;
-		} else if (!seq.equals(other.seq))
+		} else if (!getSeq().equals(other.getSeq()))
 			return false;
 		return true;
 	}

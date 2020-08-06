@@ -29,6 +29,9 @@ public class TypeMap extends HashMap<String, Object> {
     }
     public Integer asInt(String key) {
         Object v = this.get(key);
+        if (v == null) {
+        	return null;
+        }
         if (v instanceof Integer) {
             return (Integer) v;
         } else {
@@ -37,6 +40,9 @@ public class TypeMap extends HashMap<String, Object> {
     }
     public Integer asInt(String key, Integer defaultValue) {
         Object v = this.get(key);
+        if (v == null) {
+        	return null;
+        }
         if (v instanceof Integer) {
             return (Integer) v;
         } else {
@@ -52,6 +58,9 @@ public class TypeMap extends HashMap<String, Object> {
     }
     public Long asLong(String key) {
         Object v = this.get(key);
+        if (v == null) {
+        	return null;
+        }
         if(v instanceof Long) {
             return (Long)v;
         } else {
@@ -63,6 +72,9 @@ public class TypeMap extends HashMap<String, Object> {
     }
     public Double asDouble(String key) {
         Object v = this.get(key);
+        if (v == null) {
+        	return null;
+        }
         if(v instanceof Double) {
             return (Double) v;
         } else {

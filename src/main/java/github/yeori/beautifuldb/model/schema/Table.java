@@ -39,7 +39,7 @@ public class Table {
 	private String encoding;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="schema")
+	@JoinColumn(name="schema",updatable = false, nullable = false)
 	private Schema schema;
 	
 	@OneToMany(mappedBy = "table", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

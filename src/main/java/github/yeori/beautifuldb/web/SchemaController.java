@@ -8,6 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import github.yeori.beautifuldb.BeautDbException;
@@ -68,9 +70,18 @@ public class SchemaController {
 				"name", schema.getName(),
 				"seq", schema.getSeq(),
 				"vendor", schema.getVendor(),
-				"columnTypes", types
+				"columnTypes", types,
+				"x", schema.getX(),
+				"y", schema.getY()
 			)
 		);
+	}
+	@PutMapping("/schema/{schemaSeq}/loc")
+	public Object updateLoc(@PathVariable Long schemaSeq, @RequestBody TypeMap req) {
+		Double x = req.asDouble("x");
+		Double y = req.asDouble("y");
+		schemaService.updateLocation(schemaSeq, x, y);
+		return Res.success("x", x, "y", y);
 	}
 	@GetMapping("/vendor/column-types/{vendor}")
 	public Object listColumtypesByVendor(@PathVariable Integer vendorSeq) {

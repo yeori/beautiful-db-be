@@ -65,6 +65,9 @@ public class Schema {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "schema", orphanRemoval = true)
 	private Set<Edge> edges;
 	
+	private Double x;
+	private Double y;
+	
 	public Schema() {}
 	public Schema(String name, Vendor vendor, User owner) {
 		super();
@@ -121,6 +124,18 @@ public class Schema {
 	}
 	public void setEdges(Set<Edge> edges) {
 		this.edges = edges;
+	}
+	public Double getX() {
+		return x;
+	}
+	public void setX(Double x) {
+		this.x = x;
+	}
+	public Double getY() {
+		return y;
+	}
+	public void setY(Double y) {
+		this.y = y;
 	}
 	@Override
 	public int hashCode() {

@@ -1,9 +1,8 @@
 package github.yeori.beautifuldb.service.schema;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import github.yeori.beautifuldb.dao.schema.ISchemaDao;
 import github.yeori.beautifuldb.model.schema.Schema;
@@ -28,5 +27,11 @@ public class SchemaService {
 				"edges.from.table.schema",
 				"edges.from.table.columns");
 	}
-	
+
+	@Transactional
+	public void updateLocation(Long schemaSeq, Double x, Double y) {
+		Schema schema = schemaDao.getOne(schemaSeq);
+		schema.setX(x);
+		schema.setY(y);
+	}
 }

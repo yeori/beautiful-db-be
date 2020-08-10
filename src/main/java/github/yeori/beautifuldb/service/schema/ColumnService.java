@@ -14,8 +14,10 @@ import github.yeori.beautifuldb.dao.schema.IColumnDao;
 import github.yeori.beautifuldb.dao.schema.ITableDao;
 import github.yeori.beautifuldb.dao.schema.IVendorColumnTypeDao;
 import github.yeori.beautifuldb.model.schema.Column;
+import github.yeori.beautifuldb.model.schema.ColumnMeta;
 import github.yeori.beautifuldb.model.schema.Table;
 import github.yeori.beautifuldb.model.schema.Vendor;
+import github.yeori.beautifuldb.model.schema.VendorColumnType;
 import github.yeori.beautifuldb.service.parser.DbParserService;
 
 @Service
@@ -82,6 +84,18 @@ public class ColumnService {
 		String [] types = parserService.parseTypeComponent(vendor, value);
 		column.setType(types[0]);
 		column.setMag(types[1]);
+		VendorColumnType colType = columnTypeDao.findByTypeName(types[0]);
+		if (colType.getCate().equals("string")) {
+			// unsigned 설정을 해제함
+			column.getMeta().setUnsigned(false);
+		}
 		return types;
+	}
+
+	@Transactional
+	public void upateColumnMeta(Long columnSeq, String prop, Object value) {
+		Column column = columnDao.getOne(columnSeq);
+		ColumnMeta meta = column.getMeta();
+		Reflections.callSetter(ColumnMeta.class, meta, prop, value);
 	}
 }

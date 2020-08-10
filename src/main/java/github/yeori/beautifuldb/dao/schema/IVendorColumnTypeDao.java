@@ -12,4 +12,6 @@ import github.yeori.beautifuldb.model.schema.VendorColumnType;
 public interface IVendorColumnTypeDao extends JpaRepository<VendorColumnType, Long>{
 
 	List<VendorColumnType> findByVendor(Vendor vendor);
+
+	VendorColumnType findByTypeName(String typeName);
 }

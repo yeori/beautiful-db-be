@@ -23,8 +23,8 @@ public class Column {
 	@Embedded
 	private ColumnMeta meta;
 	
-	@javax.persistence.Column(nullable = true)
-	private String defaultValue;
+//	@javax.persistence.Column(nullable = true)
+//	private String defaultValue;
 	private String type;
 	private String mag;
 	private Integer ordernum;
@@ -67,12 +67,12 @@ public class Column {
 	public void setMeta(ColumnMeta meta) {
 		this.meta = meta;
 	}
-	public String getDefaultValue() {
-		return defaultValue;
-	}
-	public void setDefaultValue(String defaultValue) {
-		this.defaultValue = defaultValue;
-	}
+//	public String getDefaultValue() {
+//		return defaultValue;
+//	}
+//	public void setDefaultValue(String defaultValue) {
+//		this.defaultValue = defaultValue;
+//	}
 	public String getType() {
 		return type;
 	}
@@ -99,7 +99,7 @@ public class Column {
 	}
 	@Override
 	public String toString() {
-		return "[seq=" + seq + ", name=" + name + ", meta=" + meta + ", defaultValue=" + defaultValue + ", type="
+		return "[seq=" + seq + ", name=" + name + ", meta=" + meta + ", type="
 				+ type + ", mag=" + mag + ", ordernum=" + ordernum + "]";
 	}
 	

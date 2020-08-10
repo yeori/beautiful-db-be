@@ -35,4 +35,11 @@ public class ColumnController {
 		}
 		return Res.with(true, "prop", prop, "value", data);
 	}
+	@PutMapping("/column/{columnSeq}/meta")
+	public Object updateColumnMeta(@PathVariable Long columnSeq, @RequestBody TypeMap req) {
+		String prop = req.getStr("prop");
+		Object value = req.get("value");
+		columnService.upateColumnMeta(columnSeq, prop, value);
+		return Res.success(true);
+	}
 }

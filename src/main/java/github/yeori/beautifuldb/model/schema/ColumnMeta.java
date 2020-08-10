@@ -13,6 +13,8 @@ import github.yeori.beautifuldb.dao.config.BooleanToYNConverter;
 @Embeddable
 public class ColumnMeta {
 
+	private String defaultValue;
+	
 	@Convert(converter = BooleanToYNConverter.class)
 	private boolean pk;
 	@Convert(converter = BooleanToYNConverter.class)
@@ -26,6 +28,12 @@ public class ColumnMeta {
 	@Convert(converter = BooleanToYNConverter.class)
 	private boolean unsigned;
 	
+	public String getDefaultValue() {
+		return defaultValue;
+	}
+	public void setDefaultValue(String defaultValue) {
+		this.defaultValue = defaultValue;
+	}
 	public boolean isPk() {
 		return pk;
 	}
